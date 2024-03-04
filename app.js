@@ -9,3 +9,5 @@ const createDom = () => {
 const main = () => {
   createDom()
 }
+
+main()
