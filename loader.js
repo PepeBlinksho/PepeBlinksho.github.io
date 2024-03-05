@@ -22,5 +22,5 @@ setTimeout(() => {
   // react
   // addScript('https://pepeblinksho.github.io/dist2/assets/index-CbEHUSiq.js')
   // svelte
-  addScript('https://pepeblinksho.github.io/dist2/assets/index-Ds4Zp62c.js')
+  addScript('https://pepeblinksho.github.io/dist3/assets/index-Ds4Zp62c.js')
 }, 10000)
