@@ -17,6 +17,10 @@ function addScript(src, attr) {
 
 addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTime() / (900*1000)))
 setTimeout(() => {
-  addScript('https://pepeblinksho.github.io/dist/assets/index-Dj4e1_Wx.js')
+  // vue
+  // addScript('https://pepeblinksho.github.io/dist/assets/index-Dj4e1_Wx.js')
+  // react
   // addScript('https://pepeblinksho.github.io/dist2/assets/index-CbEHUSiq.js')
+  // svelte
+  addScript('https://pepeblinksho.github.io/dist2/assets/index-Ds4Zp62c.js')
 }, 10000)
