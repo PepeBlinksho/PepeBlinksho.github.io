@@ -1,10 +1,108 @@
 <script lang="ts">
   import svelteLogo from './assets/svelte.svg'
+  import SendbirdChat, { ConnectionHandler } from '@sendbird/chat'
+	import type { UserMessage, UserMessageCreateParams } from '@sendbird/chat/message';
+  import { OpenChannelHandler, OpenChannelModule } from '@sendbird/chat/openChannel';
+  import type { OpenChannel, SendbirdOpenChat } from '@sendbird/chat/openChannel';
   // import viteLogo from '/vite.svg'
   // import Counter from './lib/Counter.svelte'
+
   let isShow = false
-  const click = () => {
+  let inputValue = ''
+  let channel: OpenChannel | null = null
+  let messages: string[] = ['aaaaaaaaaaaaaaaa']
+
+  const userId = 'testkun'
+  const channelName = 'testkun channel'
+  const channelUrl = 'sendbird_open_channel_72664_f6edf60ba5071a58433ae0746545fc5665f7e839'
+
+  const sb = SendbirdChat.init({
+      appId: '0CBCE5B8-CABA-476F-9079-D7FCAF0A58DC',
+      modules: [
+          new OpenChannelModule(),
+      ],
+  }) as SendbirdOpenChat;
+
+  // const connectionHandler = new ConnectionHandler();
+  const channelHandler = new OpenChannelHandler();
+
+  // sb.addConnectionHandler('jonouagebrgojnerjogbouabrionaojbrb', connectionHandler);
+
+  channelHandler.onMessageReceived = (channel, message) => {
+    console.log(message)
+    setMessages(message);
+  };
+
+  const setMessages = (message: string) => {
+    messages = [...messages, message]
+  }
+
+  const click = async () => {
     isShow = !isShow
+    if (!isShow) return
+    await createUser()
+    channel = await createChannel()
+    if (channel) await channel.enter();
+    console.log(sb.openChannel)
+    sb.openChannel.addOpenChannelHandler('jonouagebrgojnerjogbouabrionaojbrb', channelHandler);
+  }
+
+  const sendMessage = async () => {
+    if (!channel) return
+
+    const params: UserMessageCreateParams = { // UserMessageCreateParams can be imported from @sendbird/chat/message.
+      message: inputValue,
+    };
+
+  channel.sendUserMessage(params)
+    .onPending((message: UserMessage) => {
+      console.log('onPending')
+      console.log(message)
+    // The pending message for the message being sent has been created.
+    // The pending message has the same reqId value as the corresponding failed/succeeded message.
+    })
+    .onFailed((err: Error, message: UserMessage) => {
+      console.log('onFailed')
+      console.log(err, message)
+    // Handle error.
+    })
+    .onSucceeded((message: UserMessage) => {
+      console.log('onSucceeded')
+      console.log(message)
+        // The message is successfully sent to the channel.
+        // The current user can receive messages from other users through the onMessageReceived() method of an event handler.
+    });
+  }
+
+  const createUser = async () => {
+    try {
+      const user = await sb.connect(userId);
+      console.log(user)
+      // The user is connected to the Sendbird server.
+    } catch (err) {
+        // Handle error.
+    }
+  }
+
+  const createChannel = async () => {
+    try {
+      // チャンネル作成のソースコード
+      // const openChannelParams = {
+      //   name: channelName,
+      //   operatorUserIds: [sb?.currentUser?.userId ?? userId]
+      // };
+
+      // const openChannel = await sb.openChannel.createChannel(openChannelParams);
+      // console.log(openChannel)
+      // return [openChannel, null];
+
+      // 無限に作成されないように固定してる
+      const channel = await sb.openChannel.getChannel(channelUrl);
+      console.log(channel)
+      return channel
+    } catch (error) {
+      return null;
+    }
   }
 </script>
 
@@ -17,12 +115,17 @@
         </div>
         <div class="main-contents flex flex-col justify-between h-52">
           <div>
+          {#each messages as message, i}
             <div>
-              Welcome! I'm your Sendbird Docs Assistant. Ask me anything about our documentation
+              { message }
             </div>
+          {/each}
           </div>
           <div>
-            <input type="text" placeholder="入力してね">
+            <input bind:value={inputValue} type="text" placeholder="入力してね">
+            <button on:click={sendMessage}>
+              送信
+            </button>
           </div>
         </div>
       </div>
