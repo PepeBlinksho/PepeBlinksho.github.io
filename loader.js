@@ -16,4 +16,5 @@ function addScript(src, attr) {
 }
 
 addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTime() / (900*1000)))
-addScript('https://pepeblinksho.github.io/dist/assets/index-Dj4e1_Wx.js')
+// addScript('https://pepeblinksho.github.io/dist/assets/index-Dj4e1_Wx.js')
+addScript('https://pepeblinksho.github.io/dist2/assets/index-CzEi9HoH.js')
