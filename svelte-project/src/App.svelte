@@ -11,11 +11,23 @@
 <main>
   <div class="img-wrapper">
     {#if isShow}
-      <div>
-        表示されるか
+      <div class="flex flex-col gap-2 justify-end justify-items-end p-6 shadow-2xl rounded-lg">
+        <div class="header">
+          Docs AI Assistant
+        </div>
+        <div class="main-contents flex flex-col justify-between h-52">
+          <div>
+            <div>
+              Welcome! I'm your Sendbird Docs Assistant. Ask me anything about our documentation
+            </div>
+          </div>
+          <div>
+            <input type="text" placeholder="入力してね">
+          </div>
+        </div>
       </div>
     {/if}
-    <div on:click={click}>
+    <div class="flex justify-end" on:click={click}>
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
     </div>
   </div>
