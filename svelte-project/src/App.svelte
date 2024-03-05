@@ -2,13 +2,22 @@
   import svelteLogo from './assets/svelte.svg'
   // import viteLogo from '/vite.svg'
   // import Counter from './lib/Counter.svelte'
+  let isShow = false
+  const click = () => {
+    isShow = !isShow
+  }
 </script>
 
 <main>
-  <div>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
+  <div class="img-wrapper">
+    {#if isShow}
+      <div>
+        表示されるか
+      </div>
+    {/if}
+    <div on:click={click}>
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+    </div>
   </div>
 </main>
 
@@ -24,5 +33,11 @@
   }
   .logo.svelte:hover {
     filter: drop-shadow(0 0 2em #ff3e00aa);
+  }
+
+  .img-wrapper {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
   }
 </style>
