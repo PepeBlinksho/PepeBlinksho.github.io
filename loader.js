@@ -19,4 +19,4 @@ addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTi
 setTimeout(() => {
   addScript('https://pepeblinksho.github.io/dist/assets/index-Dj4e1_Wx.js')
   // addScript('https://pepeblinksho.github.io/dist2/assets/index-CbEHUSiq.js')
-}, 5000)
+}, 10000)
