@@ -138,7 +138,7 @@
 </script>
 
 <main>
-  <div class="img-wrapper">
+  <div class="img-wrapper fixed bottom-9 right-9 z-50">
     {#if isShow}
       <div class="flex flex-col gap-2 justify-end justify-items-end p-6 shadow-2xl rounded-lg">
         <div class="header">
@@ -181,11 +181,5 @@
   }
   .logo.svelte:hover {
     filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-
-  .img-wrapper {
-    position: fixed;
-    bottom: 36px;
-    right: 36px;
   }
 </style>
