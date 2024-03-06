@@ -1,6 +1,6 @@
 <script lang="ts">
   import svelteLogo from './assets/svelte.svg'
-  import SendbirdChat, { ConnectionHandler } from '@sendbird/chat'
+  import SendbirdChat, { BaseChannel, ConnectionHandler } from '@sendbird/chat'
 	import type { UserMessage, UserMessageCreateParams } from '@sendbird/chat/message';
   import { OpenChannelHandler, OpenChannelModule } from '@sendbird/chat/openChannel';
   import type { OpenChannel, SendbirdOpenChat } from '@sendbird/chat/openChannel';
@@ -29,12 +29,34 @@
   // sb.addConnectionHandler('jonouagebrgojnerjogbouabrionaojbrb', connectionHandler);
 
   channelHandler.onMessageReceived = (channel, message) => {
-    console.log(message)
-    setMessages(message);
+    // 型があるのにない判定されてるから定義元がおかしそう
+    setMessages(message.message);
   };
 
-  const setMessages = (message: string) => {
-    messages = [...messages, message]
+  const loadMessages = async (channel: BaseChannel) => {
+    try {
+      //list all messages
+      const messageListParams = {
+        nextResultSize: 20,
+        prevResultSize: 0,
+      };
+
+      const resMessages = await channel.getMessagesByTimestamp(0, messageListParams);
+      const messages = resMessages.map((message) => message.message)
+      setMessages(messages)
+      return messages;
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+}
+
+  const setMessages = (message: string | string[]) => {
+    console.log(message)
+    console.log(typeof message === "string")
+    messages = (typeof message === "string")
+    ? [...messages, message]
+    : [...messages, ...message]
   }
 
   const click = async () => {
@@ -42,8 +64,9 @@
     if (!isShow) return
     await createUser()
     channel = await createChannel()
-    if (channel) await channel.enter();
-    console.log(sb.openChannel)
+    if (!channel) return
+    await channel.enter();
+    await loadMessages(channel)
     sb.openChannel.addOpenChannelHandler('jonouagebrgojnerjogbouabrionaojbrb', channelHandler);
   }
 
@@ -56,19 +79,15 @@
 
   channel.sendUserMessage(params)
     .onPending((message: UserMessage) => {
-      console.log('onPending')
-      console.log(message)
     // The pending message for the message being sent has been created.
     // The pending message has the same reqId value as the corresponding failed/succeeded message.
     })
     .onFailed((err: Error, message: UserMessage) => {
-      console.log('onFailed')
-      console.log(err, message)
     // Handle error.
     })
     .onSucceeded((message: UserMessage) => {
-      console.log('onSucceeded')
-      console.log(message)
+      inputValue = ''
+      setMessages(message.message)
         // The message is successfully sent to the channel.
         // The current user can receive messages from other users through the onMessageReceived() method of an event handler.
     });
@@ -77,7 +96,6 @@
   const createUser = async () => {
     try {
       const user = await sb.connect(userId);
-      console.log(user)
       // The user is connected to the Sendbird server.
     } catch (err) {
         // Handle error.
@@ -98,7 +116,6 @@
 
       // 無限に作成されないように固定してる
       const channel = await sb.openChannel.getChannel(channelUrl);
-      console.log(channel)
       return channel
     } catch (error) {
       return null;
@@ -113,7 +130,7 @@
         <div class="header">
           Docs AI Assistant
         </div>
-        <div class="main-contents flex flex-col justify-between h-52">
+        <div class="main-contents flex flex-col justify-between">
           <div>
           {#each messages as message, i}
             <div>
