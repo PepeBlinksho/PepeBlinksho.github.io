@@ -4,17 +4,13 @@
 	import type { UserMessage, UserMessageCreateParams } from '@sendbird/chat/message';
   import { OpenChannelHandler, OpenChannelModule } from '@sendbird/chat/openChannel';
   import type { OpenChannel, SendbirdOpenChat } from '@sendbird/chat/openChannel';
-  // import viteLogo from '/vite.svg'
-  // import Counter from './lib/Counter.svelte'
+  import { v4 as uuidv4 } from 'uuid';
 
+  // variables
   let isShow = false
   let inputValue = ''
   let channel: OpenChannel | null = null
-  let messages: string[] = ['aaaaaaaaaaaaaaaa']
-
-  const userId = 'testkun'
-  const channelName = 'testkun channel'
-  const channelUrl = 'sendbird_open_channel_72664_f6edf60ba5071a58433ae0746545fc5665f7e839'
+  let messages: string[] = []
 
   const sb = SendbirdChat.init({
       appId: '0CBCE5B8-CABA-476F-9079-D7FCAF0A58DC',
@@ -23,16 +19,15 @@
       ],
   }) as SendbirdOpenChat;
 
-  // const connectionHandler = new ConnectionHandler();
   const channelHandler = new OpenChannelHandler();
 
-  // sb.addConnectionHandler('jonouagebrgojnerjogbouabrionaojbrb', connectionHandler);
-
+  // Events
   channelHandler.onMessageReceived = (channel, message) => {
     // 型があるのにない判定されてるから定義元がおかしそう
     setMessages(message.message);
   };
 
+  // Functions
   const loadMessages = async (channel: BaseChannel) => {
     try {
       //list all messages
@@ -52,8 +47,6 @@
 }
 
   const setMessages = (message: string | string[]) => {
-    console.log(message)
-    console.log(typeof message === "string")
     messages = (typeof message === "string")
     ? [...messages, message]
     : [...messages, ...message]
@@ -64,8 +57,18 @@
     if (!isShow) return
     await createUser()
     channel = await createChannel()
+    console.log(channel.cachedMetaData)
     if (!channel) return
     await channel.enter();
+
+    // あったら登録できない
+    // const data: MetaData = {
+    //       key1: 'value1',
+    //       key2: 'value2',
+    //       tenant: 'test-test'
+    //   };
+
+    // await sb?.currentUser?.createMetaData(data);
     await loadMessages(channel)
     sb.openChannel.addOpenChannelHandler('jonouagebrgojnerjogbouabrionaojbrb', channelHandler);
   }
@@ -78,13 +81,6 @@
     };
 
   channel.sendUserMessage(params)
-    .onPending((message: UserMessage) => {
-    // The pending message for the message being sent has been created.
-    // The pending message has the same reqId value as the corresponding failed/succeeded message.
-    })
-    .onFailed((err: Error, message: UserMessage) => {
-    // Handle error.
-    })
     .onSucceeded((message: UserMessage) => {
       inputValue = ''
       setMessages(message.message)
@@ -95,7 +91,14 @@
 
   const createUser = async () => {
     try {
-      const user = await sb.connect(userId);
+      let id = localStorage.getItem('userId');
+      if (!id) {
+        // localStorageにuserIdがない場合は、新しいIDを生成して保存
+        id = uuidv4() as string
+        localStorage.setItem('userId', id);
+      }
+
+      await sb.connect(id);
       // The user is connected to the Sendbird server.
     } catch (err) {
         // Handle error.
@@ -104,19 +107,30 @@
 
   const createChannel = async () => {
     try {
-      // チャンネル作成のソースコード
-      // const openChannelParams = {
-      //   name: channelName,
-      //   operatorUserIds: [sb?.currentUser?.userId ?? userId]
-      // };
-
-      // const openChannel = await sb.openChannel.createChannel(openChannelParams);
-      // console.log(openChannel)
-      // return [openChannel, null];
+      let storageChannelUrl = localStorage.getItem('channelUrl');
 
       // 無限に作成されないように固定してる
-      const channel = await sb.openChannel.getChannel(channelUrl);
-      return channel
+      if (storageChannelUrl) {
+        const channel = await sb.openChannel.getChannel(storageChannelUrl);
+        return channel
+      }
+      else {
+        // チャンネル作成のソースコード
+        const openChannelParams = {
+          name: uuidv4(),
+          operatorUserIds: [sb?.currentUser?.userId ?? 'unkown']
+        };
+
+        const channel = await sb.openChannel.createChannel(openChannelParams);
+        localStorage.setItem('channelUrl', channel.url);
+        return channel
+      }
+
+      // const data = {
+      //     key1: 'value1',
+      //     key2: 'value2',
+      // };
+      // await channel.createMetaData(data);
     } catch (error) {
       return null;
     }
