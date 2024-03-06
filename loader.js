@@ -30,7 +30,7 @@ addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTi
   // react
   // addScript('https://pepeblinksho.github.io/dist2/assets/index-CbEHUSiq.js')
   // svelte
-  addScript('https://pepeblinksho.github.io/dist3/assets/index-B7ZIs97h.js')
+  addScript('https://pepeblinksho.github.io/dist3/svelte-project.iife.js')
 // }, 10000)
 
-createStyle('https://pepeblinksho.github.io/dist3/assets/index-B3rzzBlO.css')
+createStyle('https://pepeblinksho.github.io/dist3/style.css')
