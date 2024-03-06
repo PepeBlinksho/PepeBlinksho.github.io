@@ -15,6 +15,14 @@ function addScript(src, attr) {
   f();
 }
 
+function createStyle(sr) {
+  var ca = document.createElement('link')
+  ,ss = document.getElementsByTagName('head')[0];
+  ca.setAttribute('rel','stylesheet');
+  ca.href = sr;
+  ss.appendChild(ca);
+}
+
 addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTime() / (900*1000)))
 // setTimeout(() => {
   // vue
@@ -24,3 +32,5 @@ addScript('https://pepeblinksho.github.io/app.js?v=' + parseInt(new Date().getTi
   // svelte
   addScript('https://pepeblinksho.github.io/dist3/assets/index-B7ZIs97h.js')
 // }, 10000)
+
+createStyle('https://pepeblinksho.github.io/dist3/assets/index-B3rzzBlO.css')
