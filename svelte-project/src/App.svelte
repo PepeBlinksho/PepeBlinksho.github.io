@@ -161,8 +161,10 @@
         </div>
       </div>
     {/if}
-    <div class="flex justify-end" on:click={click}>
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
+    <div class="flex justify-end">
+      <button on:click={click}>
+        <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
+      </button>
     </div>
   </div>
 </main>
