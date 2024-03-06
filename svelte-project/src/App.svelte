@@ -69,7 +69,7 @@
     //   };
 
     // await sb?.currentUser?.createMetaData(data);
-    await loadMessages(channel)
+    if (!messages.length) await loadMessages(channel)
     sb.openChannel.addOpenChannelHandler('jonouagebrgojnerjogbouabrionaojbrb', channelHandler);
   }
 
@@ -140,7 +140,7 @@
 <main>
   <div class="img-wrapper fixed bottom-9 right-9 z-50">
     {#if isShow}
-      <div class="flex flex-col gap-2 justify-end justify-items-end p-6 shadow-2xl rounded-lg">
+      <div class="flex flex-col gap-2 justify-end justify-items-end p-6 shadow-2xl rounded-lg bg-white">
         <div class="header">
           Docs AI Assistant
         </div>
