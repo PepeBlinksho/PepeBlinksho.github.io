@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セキュア連携検証ページ</title>
+<!-- Start of Re:lation Chat script -->
+<script>
+  window.relationChatWidget = {
+    widgetId: 'ieikaghks',
+    mode: 'staging',
+    customBoot: true,
+  }
+</script>
+<script defer src="https://stage-rechat.7seeds.net/dist/rc.js"></script>
+
+<script>
+  const memberId = 'test@test.com';
+  const memberHash = 'e3fda3dbd5cc4b70ad58522c458f7db3947ac5ed801e316bfbbe2cd1467acf88';
+
+  const memberData = {
+    memberId,
+    memberHash,
+    memberData: {
+      name: 'テスト',
+      age: 80,
+      gender: '女性',
+      address: '東京都千代田区永田町1-7-1',
+      cartPrice: 0,
+    },
+  };
+
+  setTimeout(() => {
+    window.relationChatWidget.boot?.(memberData);
+  }, 1000);
+</script>
+<!-- End of Re:lation Chat script -->
+</head>
+   <style>
+    html {
+      font-size: 10px;
+    }
+  </style>
+<body>
+  <div>
+    Hello!
+  </div>
+  <div>
+    memberData: {
+      name: 'テスト',
+      age: 80,
+      gender: '女性',
+      address: '東京都千代田区永田町1-7-1',
+      cartPrice: 0,
+    }
+  </div>
+</body>
+</html>
