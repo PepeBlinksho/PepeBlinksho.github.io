@@ -30,7 +30,6 @@
     },
   };
 
-  // メソッドを叩く処理
   setTimeout(() => {
     window.relationChatWidget.boot?.(memberData);
   }, 1000);
@@ -45,6 +44,15 @@
 <body>
   <div>
     Hello!
+  </div>
+  <div>
+    memberData: {
+      name: '池田翔',
+      age: 26,
+      gender: '男性',
+      address: '石川県小松市上小松町',
+      cartPrice: 10000,
+    },
   </div>
 </body>
 </html>
