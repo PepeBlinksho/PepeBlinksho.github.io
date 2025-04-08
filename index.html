@@ -9,9 +9,33 @@
   window.relationChatWidget = {
     widgetId: 'ieikaghks',
     mode: 'staging',
+    customBoot: true
   }
 </script>
 <script defer src="https://stage-rechat.7seeds.net/dist/rc.js"></script>
+
+<script>
+  // テスト用の値を適当に入れてください
+  const memberId = 'test:tenibaka333@gmail.com';
+  const memberHash = '8d510557a5c59ab9345af4f4732737b4f859ab31622830e729392c466bf344c3';
+
+  const memberData = {
+    memberId,
+    memberHash,
+    memberData: {
+      name: '山田太郎',
+      age: 30,
+      gender: '男性',
+      address: '東京都千代田区永田町1-7-1',
+      cartPrice: 10000,
+    },
+  };
+
+  // メソッドを叩く処理
+  setTimeout(() => {
+    window.relationChatWidget.boot?.(memberData);
+  }, 1000);
+</script>
 <!-- End of Re:lation Chat script -->
 </head>
    <style>
