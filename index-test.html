@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index登録テストページ</title>
+
+    <!-- デフォルトのメタタグ（Nuxt3の設定を再現） -->
+    <meta property="og:type" content="website">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" id="robots-meta">
+    <meta name="googlebot" content="noindex, nofollow" id="googlebot-meta">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .control-panel {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .toggle-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-btn:hover {
+            background: #45a049;
+        }
+        .toggle-btn.off {
+            background: #f44336;
+        }
+        .toggle-btn.off:hover {
+            background: #da190b;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.indexed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.noindex {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .meta-display {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .meta-display pre {
+            margin: 0;
+        }
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+        }
+        .info-section h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Index登録制御テスト</h1>
+
+        <div class="control-panel">
+            <h2>制御パネル</h2>
+            <button id="toggleBtn" class="toggle-btn off" onclick="toggleIndexing()">
+                Index登録: OFF
+            </button>
+
+            <div id="status" class="status noindex">
+                現在の状態: noindex（検索エンジンにインデックスされません）
+            </div>
+        </div>
+
+        <div class="meta-display">
+            <strong>現在のメタタグ:</strong>
+            <pre id="metaCode"></pre>
+        </div>
+
+        <div class="info-section">
+            <h3>📌 仕組みの説明</h3>
+            <p>このページは、Nuxt3 SPAでの動的なnoindex制御をシミュレートしています。</p>
+            <ul>
+                <li><strong>初期状態:</strong> noindex, nofollow が設定されている</li>
+                <li><strong>Index登録ON:</strong> robots/googlebotメタタグが削除される</li>
+                <li><strong>Index登録OFF:</strong> noindexメタタグが再度追加される</li>
+            </ul>
+            <p>実際のNuxt3アプリケーションでは、app.vueで条件分岐により制御されます。</p>
+        </div>
+    </div>
+
+    <script>
+        // Index登録フラグの状態を管理
+        let indexingEnabled = true;
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初期値がtrueの場合、noindexメタタグを削除
+            if (indexingEnabled) {
+                const robotsMeta = document.getElementById('robots-meta');
+                const googlebotMeta = document.getElementById('googlebot-meta');
+                if (robotsMeta) robotsMeta.remove();
+                if (googlebotMeta) googlebotMeta.remove();
+                
+                // UIも更新
+                const btn = document.getElementById('toggleBtn');
+                const status = document.getElementById('status');
+                btn.textContent = 'Index登録: ON';
+                btn.className = 'toggle-btn';
+                status.textContent = '現在の状態: indexing可能（検索エンジンにインデックスされます）';
+                status.className = 'status indexed';
+            }
+            updateMetaDisplay();
+        });
+
+        // Index登録の切り替え
+        function toggleIndexing() {
+            indexingEnabled = !indexingEnabled;
+
+            const btn = document.getElementById('toggleBtn');
+            const status = document.getElementById('status');
+            const robotsMeta = document.getElementById('robots-meta');
+            const googlebotMeta = document.getElementById('googlebot-meta');
+
+            if (indexingEnabled) {
+                // Index登録ONの場合: noindexメタタグを削除
+                if (robotsMeta) {
+                    robotsMeta.remove();
+                }
+                if (googlebotMeta) {
+                    googlebotMeta.remove();
+                }
+
+                btn.textContent = 'Index登録: ON';
+                btn.className = 'toggle-btn';
+                status.textContent = '現在の状態: indexing可能（検索エンジンにインデックスされます）';
+                status.className = 'status indexed';
+
+                console.log('✅ Index登録ON: noindexメタタグを削除しました');
+            } else {
+                // Index登録OFFの場合: noindexメタタグを追加
+                if (!document.getElementById('robots-meta')) {
+                    const robotsMeta = document.createElement('meta');
+                    robotsMeta.name = 'robots';
+                    robotsMeta.content = 'noindex, nofollow, noarchive, nosnippet, noimageindex';
+                    robotsMeta.id = 'robots-meta';
+                    document.head.appendChild(robotsMeta);
+                }
+
+                if (!document.getElementById('googlebot-meta')) {
+                    const googlebotMeta = document.createElement('meta');
+                    googlebotMeta.name = 'googlebot';
+                    googlebotMeta.content = 'noindex, nofollow';
+                    googlebotMeta.id = 'googlebot-meta';
+                    document.head.appendChild(googlebotMeta);
+                }
+
+                btn.textContent = 'Index登録: OFF';
+                btn.className = 'toggle-btn off';
+                status.textContent = '現在の状態: noindex（検索エンジンにインデックスされません）';
+                status.className = 'status noindex';
+
+                console.log('🚫 Index登録OFF: noindexメタタグを追加しました');
+            }
+
+            updateMetaDisplay();
+        }
+
+        // メタタグの表示を更新
+        function updateMetaDisplay() {
+            const metaCode = document.getElementById('metaCode');
+            const metas = document.querySelectorAll('meta[name="robots"], meta[name="googlebot"], meta[property="og:type"]');
+
+            let metaHTML = '';
+            metas.forEach(meta => {
+                if (meta.name === 'robots') {
+                    metaHTML += `&lt;meta name="robots" content="${meta.content}"&gt;\n`;
+                } else if (meta.name === 'googlebot') {
+                    metaHTML += `&lt;meta name="googlebot" content="${meta.content}"&gt;\n`;
+                } else if (meta.getAttribute('property') === 'og:type') {
+                    metaHTML += `&lt;meta property="og:type" content="${meta.content}"&gt;\n`;
+                }
+            });
+
+            if (!metaHTML.includes('robots')) {
+                metaHTML += '// robotsメタタグは削除されています\n';
+            }
+            if (!metaHTML.includes('googlebot')) {
+                metaHTML += '// googlebotメタタグは削除されています\n';
+            }
+
+            metaCode.innerHTML = metaHTML || '// noindexメタタグは設定されていません';
+        }
+
+        // デベロッパーツール用のヘルパー関数
+        window.checkIndexStatus = function() {
+            const robotsMeta = document.querySelector('meta[name="robots"]');
+            const googlebotMeta = document.querySelector('meta[name="googlebot"]');
+
+            console.group('📊 Index Status Check');
+            console.log('Indexing Enabled:', indexingEnabled);
+            console.log('Robots Meta:', robotsMeta ? robotsMeta.content : 'Not found (Indexing allowed)');
+            console.log('Googlebot Meta:', googlebotMeta ? googlebotMeta.content : 'Not found (Indexing allowed)');
+            console.groupEnd();
+
+            return {
+                indexingEnabled,
+                robotsMeta: robotsMeta ? robotsMeta.content : null,
+                googlebotMeta: googlebotMeta ? googlebotMeta.content : null
+            };
+        };
+
+        // 初期状態をコンソールに出力
+        console.log('🚀 Index登録テストページが読み込まれました');
+        console.log('💡 ヒント: window.checkIndexStatus() でメタタグの状態を確認できます');
+    </script>
+</body>
+</html>
