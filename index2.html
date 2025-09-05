@@ -134,7 +134,7 @@
         <div class="status-panel">
             <h2>現在の状態</h2>
             <div id="countdown" class="countdown">
-                ページロード後にnoindexを追加中...
+                3秒後にnoindexが追加されます...
             </div>
             <div id="status" class="status indexed">
                 現在の状態: インデックス可能（noindexなし）
@@ -156,7 +156,7 @@
             <p>このページは、ページ読み込み後に動的にnoindexメタタグを追加する動作をテストします。</p>
             <ul>
                 <li><strong>初期状態:</strong> noindexメタタグなし（インデックス可能）</li>
-                <li><strong>ページロード後:</strong> robots/googlebotメタタグが即座に追加される</li>
+                <li><strong>3秒後:</strong> robots/googlebotメタタグが自動的に追加される</li>
                 <li><strong>用途:</strong> SPAでの遅延メタタグ制御をシミュレート</li>
             </ul>
             <p>実際のNuxt3アプリケーションでは、条件に応じて動的にメタタグを制御できます。</p>
@@ -273,16 +273,16 @@
             // 初期メタタグ表示
             updateMetaDisplay();
 
-            // ページロード後すぐにnoindexメタタグを追加
+            // カウントダウン開始
+            countdownInterval = setInterval(updateCountdown, 1000);
+
+            // 3秒後にnoindexメタタグを追加
             setTimeout(function() {
                 addNoindexTags();
-                const countdownEl = document.getElementById('countdown');
-                countdownEl.textContent = 'noindexメタタグが追加されました！';
-                countdownEl.style.color = '#d32f2f';
-            }, 100); // 100ms後に実行（DOMの更新を確実にするため）
+            }, 3000);
 
             console.log('🚀 動的noindex追加テストが開始されました');
-            console.log('⏰ ページロード後にnoindexメタタグを追加します...');
+            console.log('⏰ 3秒後にnoindexメタタグが追加されます...');
         });
 
         // デベロッパーツール用のヘルパー関数
