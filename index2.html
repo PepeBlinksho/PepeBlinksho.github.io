@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index登録制御テスト - 動的noindex追加</title>
+
+    <!-- デフォルトのメタタグ（最初はnoindexなし） -->
+    <meta property="og:type" content="website">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4GFV3NE3K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W4GFV3NE3K');
+    </script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .status-panel {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.indexed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.noindex {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .meta-display {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .meta-display pre {
+            margin: 0;
+        }
+        .timeline {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4f8;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+        }
+        .timeline h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .timeline-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #d1e7dd;
+        }
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        .timeline-item .time {
+            color: #666;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .timeline-item .event {
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+        }
+        .info-section h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+            text-align: center;
+            padding: 20px;
+            background: #fff8e1;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+    <meta name="google-site-verification" content="nQ3J7cVmv6ig-kD1ARccO6OstaGQTeXkXY2SO7hQn7Q" />
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ 動的noindex追加テスト</h1>
+
+        <div class="status-panel">
+            <h2>現在の状態</h2>
+            <div id="countdown" class="countdown">
+                ページロード後にnoindexを追加中...
+            </div>
+            <div id="status" class="status indexed">
+                現在の状態: インデックス可能（noindexなし）
+            </div>
+        </div>
+
+        <div class="meta-display">
+            <strong>現在のメタタグ:</strong>
+            <pre id="metaCode"></pre>
+        </div>
+
+        <div class="timeline">
+            <h3>📊 タイムライン</h3>
+            <div id="timeline-container"></div>
+        </div>
+
+        <div class="info-section">
+            <h3>📌 仕組みの説明</h3>
+            <p>このページは、ページ読み込み後に動的にnoindexメタタグを追加する動作をテストします。</p>
+            <ul>
+                <li><strong>初期状態:</strong> noindexメタタグなし（インデックス可能）</li>
+                <li><strong>ページロード後:</strong> robots/googlebotメタタグが即座に追加される</li>
+                <li><strong>用途:</strong> SPAでの遅延メタタグ制御をシミュレート</li>
+            </ul>
+            <p>実際のNuxt3アプリケーションでは、条件に応じて動的にメタタグを制御できます。</p>
+        </div>
+    </div>
+
+    <script>
+        // タイムライン記録用
+        const timeline = [];
+        let countdownInterval;
+        let timeRemaining = 0;
+
+        // タイムラインに項目を追加
+        function addTimelineItem(event) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ja-JP', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                fractionalSecondDigits: 3
+            });
+
+            timeline.push({ time: timeStr, event: event });
+            updateTimeline();
+        }
+
+        // タイムライン表示を更新
+        function updateTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = timeline.map(item => `
+                <div class="timeline-item">
+                    <div class="time">${item.time}</div>
+                    <div class="event">${item.event}</div>
+                </div>
+            `).join('');
+        }
+
+        // メタタグの表示を更新
+        function updateMetaDisplay() {
+            const metaCode = document.getElementById('metaCode');
+            const metas = document.querySelectorAll('meta[name="robots"], meta[name="googlebot"], meta[property="og:type"]');
+
+            let metaHTML = '';
+            metas.forEach(meta => {
+                if (meta.name === 'robots') {
+                    metaHTML += `&lt;meta name="robots" content="${meta.content}"&gt;\n`;
+                } else if (meta.name === 'googlebot') {
+                    metaHTML += `&lt;meta name="googlebot" content="${meta.content}"&gt;\n`;
+                } else if (meta.getAttribute('property') === 'og:type') {
+                    metaHTML += `&lt;meta property="og:type" content="${meta.content}"&gt;\n`;
+                }
+            });
+
+            if (!metaHTML.includes('robots')) {
+                metaHTML += '// robotsメタタグはまだ追加されていません\n';
+            }
+            if (!metaHTML.includes('googlebot')) {
+                metaHTML += '// googlebotメタタグはまだ追加されていません\n';
+            }
+
+            metaCode.innerHTML = metaHTML || '// メタタグが設定されていません';
+        }
+
+        // カウントダウンを更新
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            if (timeRemaining > 0) {
+                countdownEl.textContent = `${timeRemaining}秒後にnoindexが追加されます...`;
+                timeRemaining--;
+            } else {
+                countdownEl.textContent = 'noindexメタタグが追加されました！';
+                countdownEl.style.color = '#d32f2f';
+                clearInterval(countdownInterval);
+            }
+        }
+
+        // noindexメタタグを追加する関数
+        function addNoindexTags() {
+            // robotsメタタグを追加
+            const robotsMeta = document.createElement('meta');
+            robotsMeta.name = 'robots';
+            robotsMeta.content = 'noindex, nofollow, noarchive, nosnippet, noimageindex';
+            robotsMeta.id = 'robots-meta';
+            document.head.appendChild(robotsMeta);
+
+            // googlebotメタタグを追加
+            const googlebotMeta = document.createElement('meta');
+            googlebotMeta.name = 'googlebot';
+            googlebotMeta.content = 'noindex, nofollow';
+            googlebotMeta.id = 'googlebot-meta';
+            document.head.appendChild(googlebotMeta);
+
+            // ステータスを更新
+            const status = document.getElementById('status');
+            status.textContent = '現在の状態: noindex設定済み（検索エンジンにインデックスされません）';
+            status.className = 'status noindex';
+
+            // タイムラインに記録
+            addTimelineItem('🚫 noindexメタタグを追加しました');
+
+            // メタタグ表示を更新
+            updateMetaDisplay();
+
+            console.log('🚫 noindexメタタグが追加されました');
+            console.log('Robots:', robotsMeta.content);
+            console.log('Googlebot:', googlebotMeta.content);
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初期状態を記録
+            addTimelineItem('📄 ページが読み込まれました（noindexなし）');
+
+            // 初期メタタグ表示
+            updateMetaDisplay();
+
+            // ページロード後すぐにnoindexメタタグを追加
+            setTimeout(function() {
+                addNoindexTags();
+                const countdownEl = document.getElementById('countdown');
+                countdownEl.textContent = 'noindexメタタグが追加されました！';
+                countdownEl.style.color = '#d32f2f';
+            }, 100); // 100ms後に実行（DOMの更新を確実にするため）
+
+            console.log('🚀 動的noindex追加テストが開始されました');
+            console.log('⏰ ページロード後にnoindexメタタグを追加します...');
+        });
+
+        // デベロッパーツール用のヘルパー関数
+        window.checkMetaTags = function() {
+            const robotsMeta = document.querySelector('meta[name="robots"]');
+            const googlebotMeta = document.querySelector('meta[name="googlebot"]');
+
+            console.group('📊 Meta Tags Status');
+            console.log('Robots Meta:', robotsMeta ? robotsMeta.content : 'Not found (Indexing allowed)');
+            console.log('Googlebot Meta:', googlebotMeta ? googlebotMeta.content : 'Not found (Indexing allowed)');
+            console.groupEnd();
+
+            return {
+                robotsMeta: robotsMeta ? robotsMeta.content : null,
+                googlebotMeta: googlebotMeta ? googlebotMeta.content : null
+            };
+        };
+
+        console.log('💡 ヒント: window.checkMetaTags() でメタタグの状態を確認できます');
+    </script>
+</body>
+</html>
