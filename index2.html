@@ -134,7 +134,7 @@
         <div class="status-panel">
             <h2>現在の状態</h2>
             <div id="countdown" class="countdown">
-                3秒後にnoindexが追加されます...
+                10秒後にnoindexが追加されます...
             </div>
             <div id="status" class="status indexed">
                 現在の状態: インデックス可能（noindexなし）
@@ -156,7 +156,7 @@
             <p>このページは、ページ読み込み後に動的にnoindexメタタグを追加する動作をテストします。</p>
             <ul>
                 <li><strong>初期状態:</strong> noindexメタタグなし（インデックス可能）</li>
-                <li><strong>3秒後:</strong> robots/googlebotメタタグが自動的に追加される</li>
+                <li><strong>10秒後:</strong> robots/googlebotメタタグが自動的に追加される</li>
                 <li><strong>用途:</strong> SPAでの遅延メタタグ制御をシミュレート</li>
             </ul>
             <p>実際のNuxt3アプリケーションでは、条件に応じて動的にメタタグを制御できます。</p>
@@ -167,7 +167,7 @@
         // タイムライン記録用
         const timeline = [];
         let countdownInterval;
-        let timeRemaining = 3;
+        let timeRemaining = 10;
 
         // タイムラインに項目を追加
         function addTimelineItem(event) {
@@ -276,13 +276,13 @@
             // カウントダウン開始
             countdownInterval = setInterval(updateCountdown, 1000);
 
-            // 3秒後にnoindexメタタグを追加
+            // 10秒後にnoindexメタタグを追加
             setTimeout(function() {
                 addNoindexTags();
-            }, 3000);
+            }, 10000);
 
             console.log('🚀 動的noindex追加テストが開始されました');
-            console.log('⏰ 3秒後にnoindexメタタグが追加されます...');
+            console.log('⏰ 10秒後にnoindexメタタグが追加されます...');
         });
 
         // デベロッパーツール用のヘルパー関数
