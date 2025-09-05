@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOP</title>
+<!-- Start of Re:lation Chat script -->
+<script>
+  window.relationChatWidget = {
+    widgetId: 'ieikaghks',
+    mode: 'staging',
+    customBoot: true
+  }
+</script>
+<script defer src="https://stage-rechat.7seeds.net/dist/rc.js"></script>
+  <script>
+    window.relationFAQWidget = {"position":"right","themeColor":"#45B654","text":"よくある質問"};
+  </script>
+  <script src="https://sikeda-stg-test.faq.7seeds.net/widget/loader.js" defer></script>
+
+<script>
+  // テスト用の値を適当に入れてください
+  const memberId = 'test:tenibaka333@gmail.com';
+  const memberHash = '314f699cc2d7d9b6a1fbdc04992ba456f1dd7f7330dde45b4b06432b5248ccea';
+
+  const memberData = {
+    memberId,
+    memberHash,
+    memberData: {
+      name: '山田太郎',
+      age: 30,
+      gender: '男性',
+      address: '東京都千代田区永田町1-7-1',
+      cartPrice: 10000,
+    },
+  };
+
+  // メソッドを叩く処理
+  setTimeout(() => {
+    window.relationChatWidget.boot?.(memberData);
+  }, 1000);
+</script>
+<!-- End of Re:lation Chat script -->
+</head>
+   <style>
+    html {
+      font-size: 10px;
+    }
+  </style>
+<body>
+  <div>
+    Hello!
+  </div>
+</body>
+</html>
