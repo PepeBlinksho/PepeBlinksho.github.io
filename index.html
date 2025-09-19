@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index登録テストページ</title>
-    <meta name="google-site-verification" content="K3foZZzYgnvLvvWXnxV1uR9LfgHleV0noNjGxWXvTms" />
 
     <!-- デフォルトのメタタグ（Nuxt3の設定を再現） -->
     <meta property="og:type" content="website">
@@ -134,14 +133,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 0.5秒後にGoogle認証メタタグを追加
             setTimeout(function() {
-                // 1つ目の認証タグのみ動的に追加（2つ目はheadタグに直接記載済み）
+                // 1つ目の認証タグ
                 const verificationMeta1 = document.createElement('meta');
                 verificationMeta1.name = 'google-site-verification';
                 verificationMeta1.content = 'nQ3J7cVmv6ig-kD1ARccO6OstaGQTeXkXY2SO7hQn7Q';
                 document.head.appendChild(verificationMeta1);
 
-                console.log('✅ Google Site Verification meta tag added after 0.5 seconds');
+                console.log('✅ First Google Site Verification meta tag added after 0.5 seconds');
             }, 500);
+
+            // 0.5秒後に2つ目の認証タグを追加
+            setTimeout(function() {
+                const verificationMeta2 = document.createElement('meta');
+                verificationMeta2.name = 'google-site-verification';
+                verificationMeta2.content = 'K3foZZzYgnvLvvWXnxV1uR9LfgHleV0noNjGxWXvTms';
+                document.head.appendChild(verificationMeta2);
+
+                console.log('✅ Second Google Site Verification meta tag added after 0.5 seconds');
+            }, 10);
 
             // 初期値がtrueの場合、noindexメタタグを削除
             if (indexingEnabled) {
