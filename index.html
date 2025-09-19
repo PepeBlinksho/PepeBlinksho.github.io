@@ -134,20 +134,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 0.5秒後にGoogle認証メタタグを追加
             setTimeout(function() {
-                // 1つ目の認証タグ
+                // 1つ目の認証タグのみ動的に追加（2つ目はheadタグに直接記載済み）
                 const verificationMeta1 = document.createElement('meta');
                 verificationMeta1.name = 'google-site-verification';
                 verificationMeta1.content = 'nQ3J7cVmv6ig-kD1ARccO6OstaGQTeXkXY2SO7hQn7Q';
                 document.head.appendChild(verificationMeta1);
 
-                // 2つ目の認証タグ
-                const verificationMeta2 = document.createElement('meta');
-                verificationMeta2.name = 'google-site-verification';
-                verificationMeta2.content = 'K3foZZzYgnvLvvWXnxV1uR9LfgHleV0noNjGxWXvTms';
-                document.head.appendChild(verificationMeta2);
-
-                console.log('✅ Google Site Verification meta tags added after 0.5 seconds');
-            }, 0);
+                console.log('✅ Google Site Verification meta tag added after 0.5 seconds');
+            }, 500);
 
             // 初期値がtrueの場合、noindexメタタグを削除
             if (indexingEnabled) {
